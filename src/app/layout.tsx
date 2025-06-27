@@ -10,7 +10,11 @@ export const metadata = {
   description: 'Free financial calculators for mortgages, loans, investments, and debt payoff. Multi-currency support with detailed charts and amortization schedules.',
   keywords: 'mortgage calculator, loan calculator, finance tools, investment calculator',
   authors: [{ name: 'Finance Calculators' }],
-  viewport: 'width=device-width, initial-scale=1',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({

@@ -9,7 +9,7 @@ export default function MortgageCalculator() {
   const [inputs, setInputs] = useState<MortgageInputs>({
     loanAmount: 300000,
     interestRate: 6.5,
-    loanTerm: 30,
+    loanTerm: 0,
     downPayment: 60000,
     propertyTax: 3600,
     homeInsurance: 1200,
@@ -121,7 +121,6 @@ export default function MortgageCalculator() {
       <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Mortgage Calculator</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Input Section */}
         <div className="space-y-6">
           <div className="bg-gray-50 p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Loan Details</h2>
@@ -188,16 +187,15 @@ export default function MortgageCalculator() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Loan Term (years)
                 </label>
-                <select
-                  value={inputs.loanTerm}
+                <input
+                  type="number"
+                  min="1"
+                  max="50"
+                  value={inputs.loanTerm || ''}
                   onChange={(e) => handleInputChange('loanTerm', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value={15}>15 years</option>
-                  <option value={20}>20 years</option>
-                  <option value={25}>25 years</option>
-                  <option value={30}>30 years</option>
-                </select>
+                  placeholder="Enter loan term in years"
+                />
               </div>
             </div>
           </div>
@@ -245,7 +243,6 @@ export default function MortgageCalculator() {
           </div>
         </div>
 
-        {/* Results Section */}
         <div className="space-y-6">
           <div className="bg-blue-50 p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Monthly Payment Breakdown</h2>
@@ -294,85 +291,7 @@ export default function MortgageCalculator() {
               </div>
             </div>
           </div>
-
-          {/* Payment Breakdown Pie Chart */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Monthly Payment Breakdown</h2>
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={\`cell-\${index}\`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => formatCurrency(Number(value), inputs.currency)} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
         </div>
-      </div>
-
-      {/* Chart Section */}
-      <div className="mt-8 bg-gray-50 p-6 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">Principal vs Interest Over Time</h2>
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="year" />
-            <YAxis />
-            <Tooltip formatter={(value) => formatCurrency(Number(value), inputs.currency)} />
-            <Legend />
-            <Line type="monotone" dataKey="principal" stroke="#3B82F6" name="Principal Payment" strokeWidth={2} />
-            <Line type="monotone" dataKey="interest" stroke="#EF4444" name="Interest Payment" strokeWidth={2} />
-            <Line type="monotone" dataKey="balance" stroke="#10B981" name="Remaining Balance" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Amortization Schedule */}
-      <div className="mt-8">
-        <button
-          onClick={() => setShowAmortization(!showAmortization)}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          {showAmortization ? 'Hide' : 'Show'} Amortization Schedule
-        </button>
-        
-        {showAmortization && (
-          <div className="mt-6 bg-white border rounded-lg overflow-hidden">
-            <div className="max-h-96 overflow-y-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 sticky top-0">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Month</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Principal</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Interest</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Balance</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {results.amortizationSchedule.map((payment, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-4 py-3 text-sm">{payment.month}</td>
-                      <td className="px-4 py-3 text-sm">{formatCurrency(payment.principalPayment, inputs.currency)}</td>
-                      <td className="px-4 py-3 text-sm">{formatCurrency(payment.interestPayment, inputs.currency)}</td>
-                      <td className="px-4 py-3 text-sm">{formatCurrency(payment.remainingBalance, inputs.currency)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
