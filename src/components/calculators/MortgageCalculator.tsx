@@ -8,15 +8,15 @@ import { MortgageInputs, MortgageResults } from '@/lib/types/calculator';
 
 export default function MortgageCalculator() {
   const [inputs, setInputs] = useState<MortgageInputs>({
-    loanAmount: 400000,
+    loanAmount: 300000,
     interestRate: 6.5,
-    loanTerm: 30,
-    downPayment: 80000,
-    propertyTax: 4800,
+    loanTerm: 0,
+    downPayment: 60000,
+    propertyTax: 3600,
     homeInsurance: 1200,
-    pmi: 200,
+    pmi: 0,
     currency: 'USD',
-    loanType: 'mortgage'
+    loanType: 'mortgage'  // ADD THIS LINE ONLY
   });
 
   const [results, setResults] = useState<MortgageResults>({
@@ -98,12 +98,12 @@ export default function MortgageCalculator() {
     calculateMortgage();
   }, [inputs]);
 
-  const handleInputChange = (field: keyof MortgageInputs, value: string) => {
-    setInputs(prev => ({
-      ...prev,
-      [field]: field === 'currency' ? value : parseFloat(value) || 0
-    }));
-  };
+    const handleInputChange = (field: keyof MortgageInputs, value: string) => {
+      setInputs(prev => ({
+        ...prev,
+        [field]: field === 'currency' || field === 'loanType' ? value : parseFloat(value) || 0
+      }));
+    };
 
   // Prepare chart data for remaining balance over time
   const balanceChartData = [];
@@ -181,7 +181,25 @@ export default function MortgageCalculator() {
               <Calculator className="w-5 h-5 text-blue-600 mr-2" />
               <h2 className="text-xl font-semibold text-gray-900">Loan Details</h2>
             </div>
-            
+            <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Loan Type
+            </label>
+            <select
+              value={inputs.loanType}
+              onChange={(e) => handleInputChange('loanType', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="mortgage">New Mortgage (Purchase)</option>
+              <option value="remortgage">Remortgage (Refinance)</option>
+            </select>
+            <div className="text-sm text-gray-500 mt-1">
+              {inputs.loanType === 'mortgage' 
+                ? 'Purchasing a new home with a mortgage loan'
+                : 'Refinancing an existing mortgage for better terms'
+              }
+            </div>
+          </div>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -201,9 +219,9 @@ export default function MortgageCalculator() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Home Price
-                </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {inputs.loanType === 'mortgage' ? 'Home Price' : 'Current Property Value'}
+              </label>
                 <input
                   type="number"
                   value={inputs.loanAmount || ''}
@@ -214,8 +232,8 @@ export default function MortgageCalculator() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Down Payment
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {inputs.loanType === 'mortgage' ? 'Down Payment' : 'Outstanding Mortgage Balance'}
                 </label>
                 <input
                   type="number"
@@ -224,9 +242,12 @@ export default function MortgageCalculator() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter down payment"
                 />
-                <div className="text-sm text-blue-600 mt-1 font-medium">
-                  {inputs.loanAmount > 0 ? `${((inputs.downPayment / inputs.loanAmount) * 100).toFixed(1)}% of home price` : ''}
-                </div>
+                  <div className="text-sm text-gray-500 mt-1">
+                    {inputs.loanType === 'mortgage' 
+                      ? `${((inputs.downPayment / inputs.loanAmount) * 100).toFixed(1)}% of home price`
+                      : `${(((inputs.loanAmount - inputs.downPayment) / inputs.loanAmount) * 100).toFixed(1)}% loan-to-value ratio`
+                    }
+                  </div>
               </div>
 
               <div>
