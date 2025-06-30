@@ -7,6 +7,7 @@ export interface MortgageInputs {
   homeInsurance: number;
   pmi: number;
   currency: string;
+  loanType: 'mortgage' | 'remortgage';
 }
 
 export interface MortgageResults {
