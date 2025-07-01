@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { Download, FileText, Table, Printer, ChevronDown } from 'lucide-react';
-import { ExportData, exportToCSV, exportToPDF, exportFullPDFReport, printCalculator } from '@/lib/utils/export';
+import { CalculatorExportData, exportToCSV, exportToPDF, exportFullPDFReport, printCalculator } from '@/lib/utils/export';
 
 interface ExportButtonProps {
-  data: ExportData;
+  data: CalculatorExportData;
   calculatorElementId?: string;
   className?: string;
 }

@@ -25,7 +25,9 @@ export default function Header() {
             <Link href="/calculators/mortgage" className="text-gray-600 hover:text-blue-600 transition-colors">
               Mortgage Calculator
             </Link>
-            <div className="text-gray-400 cursor-not-allowed">Loan Calculator</div>
+            <Link href="/calculators/loan" className="text-gray-600 hover:text-blue-600 transition-colors">
+              Loan Calculator
+            </Link>
             <div className="text-gray-400 cursor-not-allowed">Investment Calculator</div>
           </nav>
 
@@ -42,23 +44,27 @@ export default function Header() {
         {isMenuOpen && (
           <nav className="md:hidden py-4 border-t">
             <div className="space-y-2">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
-              <Link 
-                href="/calculators/mortgage" 
+              <Link
+                href="/calculators/mortgage"
                 className="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Mortgage Calculator
               </Link>
-              <div className="block px-3 py-2 text-gray-400 cursor-not-allowed">
-                Loan Calculator (Coming Soon)
-              </div>
+              <Link
+                href="/calculators/loan"
+                className="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Loan Calculator
+              </Link>
               <div className="block px-3 py-2 text-gray-400 cursor-not-allowed">
                 Investment Calculator (Coming Soon)
               </div>

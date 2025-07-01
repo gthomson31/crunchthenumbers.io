@@ -42,3 +42,28 @@ export interface ExportData {
   inputs: MortgageInputs;
   results: MortgageResults;
 }
+
+export interface LoanInputs {
+  loanAmount: number;
+  interestRate: number;
+  loanTerm: number;
+  currency: string;
+  loanType: 'personal' | 'auto' | 'student' | 'business';
+  monthlyOverpayment: number;
+  lumpSumPayment: number;
+  lumpSumYear: number;
+}
+
+export interface LoanResults {
+  monthlyPayment: number;
+  totalInterest: number;
+  totalPayment: number;
+  amortizationSchedule: AmortizationPayment[];
+  interestSaved: number;
+  timeSaved: number;
+}
+
+export interface LoanExportData {
+  inputs: LoanInputs;
+  results: LoanResults;
+}

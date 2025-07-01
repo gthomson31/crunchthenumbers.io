@@ -11,7 +11,7 @@ export default function HomePage() {
             Free Financial Calculators
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Make informed financial decisions with our comprehensive suite of calculators. 
+            Make informed financial decisions with our comprehensive suite of calculators.
             All tools are free, support multiple currencies, and provide detailed breakdowns.
           </p>
           <div className="flex justify-center space-x-4 text-sm text-gray-500">
@@ -52,18 +52,20 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Loan Calculator - Coming Soon */}
-          <div className="bg-white p-8 rounded-xl shadow-lg opacity-75">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-              <PiggyBank className="w-6 h-6 text-purple-600" />
+          {/* Loan Calculator */}
+          <Link href="/calculators/loan" className="group">
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
+                <PiggyBank className="w-6 h-6 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 group-hover:text-purple-600 transition-colors">
+                Loan Calculator
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Calculate payments for personal loans, auto loans, student loans, and business financing options.
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-gray-500">
-              Loan Calculator
-            </h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              Coming soon - Calculate payments for personal loans, auto loans, and other financing options.
-            </p>
-          </div>
+          </Link>
 
           {/* Debt Payoff Calculator - Coming Soon */}
           <div className="bg-white p-8 rounded-xl shadow-lg opacity-75">

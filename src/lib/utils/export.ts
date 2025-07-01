@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { MortgageInputs, MortgageResults } from '@/lib/types/calculator';
+import { MortgageInputs, MortgageResults, LoanInputs, LoanResults } from '@/lib/types/calculator';
 import { formatCurrency } from './currency';
 
 export interface ExportData {
@@ -8,8 +8,15 @@ export interface ExportData {
   results: MortgageResults;
 }
 
+export interface LoanExportData {
+  inputs: LoanInputs;
+  results: LoanResults;
+}
+
+export type CalculatorExportData = ExportData | LoanExportData;
+
 // CSV Export for Amortization Schedule
-export const exportToCSV = (data: ExportData) => {
+export const exportToCSV = (data: CalculatorExportData) => {
   const { inputs, results } = data;
 
   // Create CSV headers
@@ -39,7 +46,8 @@ export const exportToCSV = (data: ExportData) => {
 
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${inputs.loanType}_amortization_schedule.csv`;
+  const fileName = `${inputs.loanType}_amortization_schedule.csv`;
+  link.download = fileName;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -47,12 +55,17 @@ export const exportToCSV = (data: ExportData) => {
 };
 
 // PDF Export - Summary Only
-export const exportToPDF = async (data: ExportData) => {
+export const exportToPDF = async (data: CalculatorExportData) => {
   const { inputs, results } = data;
   const pdf = new jsPDF();
 
+  // Check if this is mortgage or loan data
+  const isMortgage = 'downPayment' in inputs;
+
   // Title
-  const title = inputs.loanType === 'mortgage' ? 'Mortgage Calculator Report' : 'Remortgage Calculator Report';
+  const title = isMortgage
+    ? (inputs.loanType === 'mortgage' ? 'Mortgage Calculator Report' : 'Remortgage Calculator Report')
+    : `${inputs.loanType.charAt(0).toUpperCase() + inputs.loanType.slice(1)} Loan Calculator Report`;
   pdf.setFontSize(20);
   pdf.text(title, 20, 30);
 
@@ -64,17 +77,30 @@ export const exportToPDF = async (data: ExportData) => {
   let yPosition = 65;
   const lineHeight = 8;
 
-  const loanDetails = [
-    [`Loan Type:`, inputs.loanType === 'mortgage' ? 'New Mortgage (Purchase)' : 'Remortgage (Refinance)'],
-    [`${inputs.loanType === 'mortgage' ? 'Home Price:' : 'Property Value:'}`, formatCurrency(inputs.loanAmount, inputs.currency)],
-    [`${inputs.loanType === 'mortgage' ? 'Down Payment:' : 'Outstanding Balance:'}`, formatCurrency(inputs.downPayment, inputs.currency)],
-    [`Loan Amount:`, formatCurrency(inputs.loanAmount - inputs.downPayment, inputs.currency)],
-    [`Interest Rate:`, `${inputs.interestRate}%`],
-    [`Loan Term:`, `${inputs.loanTerm} years`],
-    [`Property Tax (Annual):`, formatCurrency(inputs.propertyTax, inputs.currency)],
-    [`Home Insurance (Annual):`, formatCurrency(inputs.homeInsurance, inputs.currency)],
-    [`PMI (Monthly):`, formatCurrency(inputs.pmi, inputs.currency)]
-  ];
+  let loanDetails: [string, string][];
+
+  if (isMortgage) {
+    const mortgageInputs = inputs as MortgageInputs;
+    loanDetails = [
+      [`Loan Type:`, mortgageInputs.loanType === 'mortgage' ? 'New Mortgage (Purchase)' : 'Remortgage (Refinance)'],
+      [`${mortgageInputs.loanType === 'mortgage' ? 'Home Price:' : 'Property Value:'}`, formatCurrency(mortgageInputs.loanAmount, mortgageInputs.currency)],
+      [`${mortgageInputs.loanType === 'mortgage' ? 'Down Payment:' : 'Outstanding Balance:'}`, formatCurrency(mortgageInputs.downPayment, mortgageInputs.currency)],
+      [`Loan Amount:`, formatCurrency(mortgageInputs.loanAmount - mortgageInputs.downPayment, mortgageInputs.currency)],
+      [`Interest Rate:`, `${mortgageInputs.interestRate}%`],
+      [`Loan Term:`, `${mortgageInputs.loanTerm} years`],
+      [`Property Tax (Annual):`, formatCurrency(mortgageInputs.propertyTax, mortgageInputs.currency)],
+      [`Home Insurance (Annual):`, formatCurrency(mortgageInputs.homeInsurance, mortgageInputs.currency)],
+      [`PMI (Monthly):`, formatCurrency(mortgageInputs.pmi, mortgageInputs.currency)]
+    ];
+  } else {
+    const loanInputs = inputs as LoanInputs;
+    loanDetails = [
+      [`Loan Type:`, loanInputs.loanType.charAt(0).toUpperCase() + loanInputs.loanType.slice(1) + ' Loan'],
+      [`Loan Amount:`, formatCurrency(loanInputs.loanAmount, loanInputs.currency)],
+      [`Interest Rate:`, `${loanInputs.interestRate}%`],
+      [`Loan Term:`, `${loanInputs.loanTerm} years`]
+    ];
+  }
 
   loanDetails.forEach(([label, value]) => {
     pdf.text(`${label}`, 20, yPosition);
@@ -85,17 +111,27 @@ export const exportToPDF = async (data: ExportData) => {
   // Payment Summary
   yPosition += 10;
   pdf.setFontSize(16);
-  pdf.text('Monthly Payment Breakdown', 20, yPosition);
+  pdf.text(isMortgage ? 'Monthly Payment Breakdown' : 'Payment Summary', 20, yPosition);
   pdf.setFontSize(12);
   yPosition += 15;
 
-  const paymentDetails = [
-    ['Principal & Interest:', formatCurrency(results.monthlyPI, inputs.currency)],
-    ['Property Tax:', formatCurrency(inputs.propertyTax / 12, inputs.currency)],
-    ['Home Insurance:', formatCurrency(inputs.homeInsurance / 12, inputs.currency)],
-    ['PMI:', formatCurrency(inputs.pmi, inputs.currency)],
-    ['Total Monthly Payment:', formatCurrency(results.monthlyPayment, inputs.currency)]
-  ];
+  let paymentDetails: [string, string][];
+
+  if (isMortgage) {
+    const mortgageInputs = inputs as MortgageInputs;
+    const mortgageResults = results as MortgageResults;
+    paymentDetails = [
+      ['Principal & Interest:', formatCurrency(mortgageResults.monthlyPI, mortgageInputs.currency)],
+      ['Property Tax:', formatCurrency(mortgageInputs.propertyTax / 12, mortgageInputs.currency)],
+      ['Home Insurance:', formatCurrency(mortgageInputs.homeInsurance / 12, mortgageInputs.currency)],
+      ['PMI:', formatCurrency(mortgageInputs.pmi, mortgageInputs.currency)],
+      ['Total Monthly Payment:', formatCurrency(mortgageResults.monthlyPayment, mortgageInputs.currency)]
+    ];
+  } else {
+    paymentDetails = [
+      ['Monthly Payment:', formatCurrency(results.monthlyPayment, inputs.currency)]
+    ];
+  }
 
   paymentDetails.forEach(([label, value], index) => {
     if (index === paymentDetails.length - 1) {
@@ -131,12 +167,13 @@ export const exportToPDF = async (data: ExportData) => {
   pdf.text(`Generated on ${new Date().toLocaleDateString()}`, 20, 280);
 
   // Save PDF
-  const fileName = `${inputs.loanType}_calculator_report.pdf`;
+  const calculatorType = isMortgage ? inputs.loanType : inputs.loanType;
+  const fileName = `${calculatorType}_calculator_report.pdf`;
   pdf.save(fileName);
 };
 
 // PDF Export with Charts
-export const exportFullPDFReport = async (elementId: string, data: ExportData) => {
+export const exportFullPDFReport = async (elementId: string, data: CalculatorExportData) => {
   try {
     const element = document.getElementById(elementId);
     if (!element) {
@@ -161,11 +198,13 @@ export const exportFullPDFReport = async (elementId: string, data: ExportData) =
     const imgHeight = canvas.height;
     const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
     const imgX = (pdfWidth - imgWidth * ratio) / 2;
-    const imgY = 10;
 
     // Add title page
     pdf.setFontSize(20);
-    const title = data.inputs.loanType === 'mortgage' ? 'Mortgage Calculator Report' : 'Remortgage Calculator Report';
+    const isMortgage = 'downPayment' in data.inputs;
+    const title = isMortgage
+      ? (data.inputs.loanType === 'mortgage' ? 'Mortgage Calculator Report' : 'Remortgage Calculator Report')
+      : `${data.inputs.loanType.charAt(0).toUpperCase() + data.inputs.loanType.slice(1)} Loan Calculator Report`;
     pdf.text(title, pdfWidth / 2, 30, { align: 'center' });
 
     pdf.setFontSize(12);
