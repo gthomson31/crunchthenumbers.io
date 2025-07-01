@@ -151,7 +151,13 @@ export default function DebtPayoffCalculator() {
     debts: DebtItem[],
     extraPayment: number,
     strategy: "avalanche" | "snowball" | "minimum"
-  ) => {
+  ): {
+    payoffTime: number;
+    totalInterest: number;
+    totalPaid: number;
+    debtSchedule: DebtPaymentSchedule[];
+    monthlyBreakdown: DebtMonthlyPayment[];
+  } => {
     // Create working copies of debts
     let workingDebts = debts.map((debt) => ({ ...debt }));
     const debtSchedule: DebtPaymentSchedule[] = [];
@@ -858,7 +864,7 @@ export default function DebtPayoffCalculator() {
                       fill="#8884d8"
                       dataKey="value"
                     >
-                      {debtBreakdownData.map((entry, index) => (
+                      {debtBreakdownData.map((_, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
