@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "docs": "node scripts/generate-docs.js",
-    "docs:components": "node scripts/analyze-components.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",

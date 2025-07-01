@@ -100,7 +100,7 @@ export const exportToPDF = async (data: ExportData) => {
   paymentDetails.forEach(([label, value], index) => {
     if (index === paymentDetails.length - 1) {
       pdf.setFontSize(14);
-      pdf.setFont(undefined, 'bold');
+      pdf.setFont('helvetica', 'bold');
     }
     pdf.text(`${label}`, 20, yPosition);
     pdf.text(`${value}`, 120, yPosition);
@@ -109,7 +109,7 @@ export const exportToPDF = async (data: ExportData) => {
 
   // Loan Summary
   yPosition += 10;
-  pdf.setFont(undefined, 'normal');
+  pdf.setFont('helvetica', 'normal');
   pdf.setFontSize(16);
   pdf.text('Loan Summary', 20, yPosition);
   pdf.setFontSize(12);

@@ -44,6 +44,9 @@ export default function MortgageCalculator() {
     pmi: 0,
     currency: savedCurrency, // Use saved currency
     loanType: "mortgage",
+    monthlyOverpayment: 0,
+    lumpSumPayment: 0,
+    lumpSumYear: 1,
   });
 
   const [results, setResults] = useState<MortgageResults>({
@@ -53,6 +56,8 @@ export default function MortgageCalculator() {
     monthlyPI: 0,
     monthlyTaxInsurance: 0,
     amortizationSchedule: [],
+    interestSaved: 0,
+    timeSaved: 0,
   });
 
   const [showAmortization, setShowAmortization] = useState(false);
@@ -71,6 +76,8 @@ export default function MortgageCalculator() {
           monthlyPI: 0,
           monthlyTaxInsurance: 0,
           amortizationSchedule: [],
+          interestSaved: 0,
+          timeSaved: 0,
         });
         return;
       }
@@ -96,10 +103,15 @@ export default function MortgageCalculator() {
       const totalInterest = monthlyPI * numberOfPayments - principal;
       const totalPayment = principal + totalInterest;
 
-      // Generate amortization schedule
+      // Generate amortization schedule with overpayments
       const schedule = [];
+      const scheduleWithOverpayments = [];
       let remainingBalance = principal;
+      let remainingBalanceWithOverpayments = principal;
+      let totalInterestWithOverpayments = 0;
+      let actualMonthsToPayoff = 0;
 
+      // Calculate normal schedule
       for (let month = 1; month <= numberOfPayments; month++) {
         const interestPayment = remainingBalance * monthlyRate;
         const principalPayment = monthlyPI - interestPayment;
@@ -117,13 +129,60 @@ export default function MortgageCalculator() {
         });
       }
 
+      // Calculate schedule with overpayments
+      for (let month = 1; month <= numberOfPayments; month++) {
+        if (remainingBalanceWithOverpayments <= 0) break;
+
+        const interestPayment = remainingBalanceWithOverpayments * monthlyRate;
+        let principalPayment = monthlyPI - interestPayment;
+        let totalPayment = monthlyPI;
+
+        // Add monthly overpayment
+        if (inputs.monthlyOverpayment > 0) {
+          principalPayment += inputs.monthlyOverpayment;
+          totalPayment += inputs.monthlyOverpayment;
+        }
+
+        // Add lump sum payment if this is the right year
+        if (inputs.lumpSumPayment > 0 && Math.ceil(month / 12) === inputs.lumpSumYear) {
+          principalPayment += inputs.lumpSumPayment;
+          totalPayment += inputs.lumpSumPayment;
+        }
+
+        // Don't overpay beyond remaining balance
+        if (principalPayment > remainingBalanceWithOverpayments) {
+          principalPayment = remainingBalanceWithOverpayments;
+          totalPayment = interestPayment + principalPayment;
+        }
+
+        remainingBalanceWithOverpayments -= principalPayment;
+        totalInterestWithOverpayments += interestPayment;
+        actualMonthsToPayoff = month;
+
+        scheduleWithOverpayments.push({
+          month,
+          year: Math.ceil(month / 12),
+          principalPayment: Math.round(principalPayment * 100) / 100,
+          interestPayment: Math.round(interestPayment * 100) / 100,
+          remainingBalance: Math.round(remainingBalanceWithOverpayments * 100) / 100,
+          totalPayment: Math.round(totalPayment * 100) / 100,
+        });
+
+        if (remainingBalanceWithOverpayments <= 0) break;
+      }
+
+      const interestSaved = totalInterest - totalInterestWithOverpayments;
+      const timeSaved = numberOfPayments - actualMonthsToPayoff;
+
       setResults({
         monthlyPayment: Math.round(totalMonthlyPayment * 100) / 100,
         monthlyPI: Math.round(monthlyPI * 100) / 100,
         monthlyTaxInsurance: Math.round(monthlyTaxInsurance * 100) / 100,
         totalInterest: Math.round(totalInterest * 100) / 100,
         totalPayment: Math.round(totalPayment * 100) / 100,
-        amortizationSchedule: schedule,
+        amortizationSchedule: inputs.monthlyOverpayment > 0 || inputs.lumpSumPayment > 0 ? scheduleWithOverpayments : schedule,
+        interestSaved: Math.round(interestSaved * 100) / 100,
+        timeSaved: timeSaved,
       });
     };
 
@@ -424,6 +483,70 @@ export default function MortgageCalculator() {
               </div>
             </div>
           </div>
+
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100">
+            <div className="flex items-center mb-4">
+              <TrendingDown className="w-5 h-5 text-purple-600 mr-2" />
+              <h2 className="text-xl font-semibold text-gray-900">
+                Overpayment Options
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Monthly Overpayment
+                </label>
+                <input
+                  type="number"
+                  value={inputs.monthlyOverpayment || ""}
+                  onChange={(e) =>
+                    handleInputChange("monthlyOverpayment", e.target.value)
+                  }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="Extra monthly payment"
+                />
+                <div className="text-sm text-gray-500 mt-1">
+                  Additional amount to pay each month beyond required payment
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  One-time Lump Sum Payment
+                </label>
+                <input
+                  type="number"
+                  value={inputs.lumpSumPayment || ""}
+                  onChange={(e) =>
+                    handleInputChange("lumpSumPayment", e.target.value)
+                  }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="One-time extra payment"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Lump Sum Payment Year
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max={inputs.loanTerm}
+                  value={inputs.lumpSumYear || ""}
+                  onChange={(e) =>
+                    handleInputChange("lumpSumYear", e.target.value)
+                  }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="Year to make lump sum payment"
+                />
+                <div className="text-sm text-gray-500 mt-1">
+                  Year (1-{inputs.loanTerm}) when the lump sum payment will be made
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Results and Charts Section */}
@@ -475,6 +598,42 @@ export default function MortgageCalculator() {
               </div>
             </div>
           </div>
+
+          {/* Overpayment Benefits Display */}
+          {(inputs.monthlyOverpayment > 0 || inputs.lumpSumPayment > 0) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-xl text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-purple-100 text-sm font-medium">
+                      Interest Saved
+                    </p>
+                    <p className="text-3xl font-bold">
+                      {formatCurrency(results.interestSaved, inputs.currency)}
+                    </p>
+                  </div>
+                  <TrendingDown className="w-8 h-8 text-purple-200" />
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-6 rounded-xl text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-indigo-100 text-sm font-medium">
+                      Time Saved
+                    </p>
+                    <p className="text-3xl font-bold">
+                      {results.timeSaved} months
+                    </p>
+                    <p className="text-sm text-indigo-200">
+                      ({Math.floor(results.timeSaved / 12)} years, {results.timeSaved % 12} months)
+                    </p>
+                  </div>
+                  <Calendar className="w-8 h-8 text-indigo-200" />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Chart Toggle Buttons */}
           <div className="flex flex-wrap gap-2 bg-gray-100 p-2 rounded-lg">
@@ -684,6 +843,41 @@ export default function MortgageCalculator() {
                 </p>
               </div>
             </div>
+
+            {(inputs.monthlyOverpayment > 0 || inputs.lumpSumPayment > 0) && (
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <h4 className="text-md font-semibold mb-3 text-purple-700">
+                  Overpayment Details
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {inputs.monthlyOverpayment > 0 && (
+                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                      <p className="text-sm text-purple-600">Monthly Overpayment</p>
+                      <p className="text-xl font-bold text-purple-700">
+                        {formatCurrency(inputs.monthlyOverpayment, inputs.currency)}
+                      </p>
+                    </div>
+                  )}
+                  {inputs.lumpSumPayment > 0 && (
+                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                      <p className="text-sm text-purple-600">Lump Sum (Year {inputs.lumpSumYear})</p>
+                      <p className="text-xl font-bold text-purple-700">
+                        {formatCurrency(inputs.lumpSumPayment, inputs.currency)}
+                      </p>
+                    </div>
+                  )}
+                  <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                    <p className="text-sm text-purple-600">Total Benefits</p>
+                    <p className="text-lg font-bold text-purple-700">
+                      {formatCurrency(results.interestSaved, inputs.currency)} saved
+                    </p>
+                    <p className="text-sm text-purple-600">
+                      {results.timeSaved} months earlier
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Amortization Schedule */}

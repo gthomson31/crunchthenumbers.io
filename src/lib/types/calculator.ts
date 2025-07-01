@@ -8,6 +8,9 @@ export interface MortgageInputs {
   pmi: number;
   currency: string;
   loanType: 'mortgage' | 'remortgage';
+  monthlyOverpayment: number;
+  lumpSumPayment: number;
+  lumpSumYear: number;
 }
 
 export interface MortgageResults {
@@ -17,6 +20,8 @@ export interface MortgageResults {
   monthlyPI: number;
   monthlyTaxInsurance: number;
   amortizationSchedule: AmortizationPayment[];
+  interestSaved: number;
+  timeSaved: number;
 }
 
 export interface AmortizationPayment {
