@@ -1,9 +1,9 @@
 import MortgageCalculator from '@/components/calculators/MortgageCalculator';
 
 export const metadata = {
-  title: 'Mortgage Calculator | Calculate Monthly Payments & Interest',
-  description: 'Free mortgage calculator with amortization schedule. Calculate monthly payments, total interest, and compare different loan scenarios. Supports multiple currencies.',
-  keywords: 'mortgage calculator, home loan calculator, monthly payment calculator, amortization schedule',
+  title: 'Mortgage Calculator - Crunch the Numbers | Free Home Loan Calculator',
+  description: 'Crunch the numbers on your mortgage with our free calculator. Calculate monthly payments, total interest, and detailed amortization schedules for home loans.',
+  keywords: 'mortgage calculator, home loan calculator, crunch the numbers, monthly payment calculator, amortization schedule',
 };
 
 export default function MortgagePage() {

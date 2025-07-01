@@ -14,21 +14,26 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Calculator className="w-6 h-6 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">FinanceCalc</span>
+            <span className="text-xl font-bold text-gray-900">Crunch the Numbers</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6">
             <Link href="/" className="text-gray-600 hover:text-blue-600 transition-colors">
               Home
             </Link>
             <Link href="/calculators/mortgage" className="text-gray-600 hover:text-blue-600 transition-colors">
-              Mortgage Calculator
+              Mortgage
+            </Link>
+            <Link href="/calculators/investment" className="text-gray-600 hover:text-blue-600 transition-colors">
+              Investment
             </Link>
             <Link href="/calculators/loan" className="text-gray-600 hover:text-blue-600 transition-colors">
-              Loan Calculator
+              Loan
             </Link>
-            <div className="text-gray-400 cursor-not-allowed">Investment Calculator</div>
+            <Link href="/calculators/debt-payoff" className="text-gray-600 hover:text-blue-600 transition-colors">
+              Debt Payoff
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -59,15 +64,26 @@ export default function Header() {
                 Mortgage Calculator
               </Link>
               <Link
+                href="/calculators/investment"
+                className="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Investment Calculator
+              </Link>
+              <Link
                 href="/calculators/loan"
                 className="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Loan Calculator
               </Link>
-              <div className="block px-3 py-2 text-gray-400 cursor-not-allowed">
-                Investment Calculator (Coming Soon)
-              </div>
+              <Link
+                href="/calculators/debt-payoff"
+                className="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Debt Payoff Calculator
+              </Link>
             </div>
           </nav>
         )}

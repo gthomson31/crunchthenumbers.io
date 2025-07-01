@@ -6,10 +6,10 @@ import Footer from '@/components/layout/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Finance Calculators | Free Mortgage, Loan & Investment Tools',
-  description: 'Free financial calculators for mortgages, loans, investments, and debt payoff. Multi-currency support with detailed charts and amortization schedules.',
-  keywords: 'mortgage calculator, loan calculator, finance tools, investment calculator',
-  authors: [{ name: 'Finance Calculators' }],
+  title: 'Crunch the Numbers | Free Financial Calculators & Tools',
+  description: 'Crunch the numbers with our free financial calculators for mortgages, loans, investments, and debt payoff. Multi-currency support with detailed charts and amortization schedules.',
+  keywords: 'crunch the numbers, financial calculator, mortgage calculator, loan calculator, investment calculator, debt payoff calculator',
+  authors: [{ name: 'Crunch the Numbers' }],
 };
 
 export const viewport = {

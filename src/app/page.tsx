@@ -8,11 +8,11 @@ export default function HomePage() {
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Free Financial Calculators
+            Crunch the Numbers
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Make informed financial decisions with our comprehensive suite of calculators.
-            All tools are free, support multiple currencies, and provide detailed breakdowns.
+            Make informed financial decisions with our comprehensive suite of free calculators.
+            Crunch the numbers for mortgages, loans, investments, and debt payoff with detailed analysis.
           </p>
           <div className="flex justify-center space-x-4 text-sm text-gray-500">
             <span>✓ Multi-currency support</span>
@@ -25,60 +25,68 @@ export default function HomePage() {
         {/* Calculator Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Mortgage Calculator */}
-          <Link href="/calculators/mortgage" className="group">
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <Link href="/calculators/mortgage" className="group h-full">
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 h-full flex flex-col">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
                 <Calculator className="w-6 h-6 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors">
                 Mortgage Calculator
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-sm leading-relaxed flex-grow">
                 Calculate monthly payments, total interest, and view detailed amortization schedules for your home loan.
               </p>
             </div>
           </Link>
 
-          {/* Investment Calculator - Coming Soon */}
-          <div className="bg-white p-8 rounded-xl shadow-lg opacity-75">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-              <TrendingUp className="w-6 h-6 text-green-600" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3 text-gray-500">
-              Investment Calculator
-            </h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              Coming soon - Plan your retirement and calculate investment growth with compound interest.
-            </p>
-          </div>
-
-          {/* Loan Calculator */}
-          <Link href="/calculators/loan" className="group">
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
-                <PiggyBank className="w-6 h-6 text-purple-600" />
+          {/* Investment Calculator */}
+          <Link href="/calculators/investment" className="group h-full">
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 h-full flex flex-col">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+                <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-3 group-hover:text-purple-600 transition-colors">
-                Loan Calculator
+              <h3 className="text-xl font-semibold mb-3 group-hover:text-green-600 transition-colors">
+                Investment Calculator
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Calculate payments for personal loans, auto loans, student loans, and business financing options.
+              <p className="text-gray-600 text-sm leading-relaxed flex-grow">
+                Plan your retirement and calculate investment growth with compound interest and inflation adjustments.
               </p>
             </div>
           </Link>
 
-          {/* Debt Payoff Calculator - Coming Soon */}
-          <div className="bg-white p-8 rounded-xl shadow-lg opacity-75">
-            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-              <CreditCard className="w-6 h-6 text-red-600" />
+          {/* Loan Calculator */}
+          <Link href="/calculators/loan" className="group h-full">
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 h-full flex flex-col">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
+                <PiggyBank className="w-6 h-6 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 group-hover:text-purple-600 transition-colors">
+                Loan
+                <br />
+                Calculator
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed flex-grow">
+                Calculate monthly payments, total interest, and amortization schedules for personal, auto, student, and business loans.
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-3 text-gray-500">
-              Debt Payoff Calculator
-            </h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              Coming soon - Create a strategy to pay off credit cards and other debts faster.
-            </p>
-          </div>
+          </Link>
+
+          {/* Debt Payoff Calculator */}
+          <Link href="/calculators/debt-payoff" className="group h-full">
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 h-full flex flex-col">
+              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-200 transition-colors">
+                <CreditCard className="w-6 h-6 text-red-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 group-hover:text-red-600 transition-colors">
+                Debt Payoff
+                <br />
+                Calculator
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed flex-grow">
+                Create a strategy to pay off credit cards and other debts faster with avalanche and snowball methods.
+              </p>
+            </div>
+          </Link>
         </div>
 
         {/* Features Section */}

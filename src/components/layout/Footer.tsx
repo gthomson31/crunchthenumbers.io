@@ -10,14 +10,14 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <Calculator className="w-6 h-6 text-blue-400" />
-              <span className="text-xl font-bold">FinanceCalc</span>
+              <span className="text-xl font-bold">Crunch the Numbers</span>
             </div>
             <p className="text-gray-400 mb-4">
-              Free, professional-grade financial calculators to help you make informed decisions about your money. 
+              Free, professional-grade financial calculators to help you crunch the numbers and make informed decisions about your money.
               All tools support multiple currencies and provide detailed analysis.
             </p>
             <p className="text-sm text-gray-500">
-              © 2024 FinanceCalc. All rights reserved.
+              © 2024 Crunch the Numbers. All rights reserved.
             </p>
           </div>
 
@@ -30,9 +30,21 @@ export default function Footer() {
                   Mortgage Calculator
                 </Link>
               </li>
-              <li className="text-gray-600">Loan Calculator (Soon)</li>
-              <li className="text-gray-600">Investment Calculator (Soon)</li>
-              <li className="text-gray-600">Debt Payoff Calculator (Soon)</li>
+              <li>
+                <Link href="/calculators/investment" className="text-gray-400 hover:text-white transition-colors">
+                  Investment Calculator
+                </Link>
+              </li>
+              <li>
+                <Link href="/calculators/loan" className="text-gray-400 hover:text-white transition-colors">
+                  Loan Calculator
+                </Link>
+              </li>
+              <li>
+                <Link href="/calculators/debt-payoff" className="text-gray-400 hover:text-white transition-colors">
+                  Debt Payoff Calculator
+                </Link>
+              </li>
             </ul>
           </div>
 
