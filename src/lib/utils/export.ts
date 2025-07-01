@@ -92,7 +92,8 @@ export const exportToCSV = (data: CalculatorExportData) => {
 
     fileName = `debt_payoff_schedule.csv`;
   } else {
-    // Original amortization schedule logic
+    // Original amortization schedule logic for mortgage/loan calculators
+    const amortizationResults = results as MortgageResults | LoanResults;
     headers = [
       'Payment #',
       'Principal Payment',
@@ -104,7 +105,7 @@ export const exportToCSV = (data: CalculatorExportData) => {
     // Convert amortization schedule to CSV format
     csvRows = [
       headers.join(','),
-      ...results.amortizationSchedule.map(payment => [
+      ...amortizationResults.amortizationSchedule.map(payment => [
         payment.month,
         payment.principalPayment.toFixed(2),
         payment.interestPayment.toFixed(2),
@@ -113,7 +114,8 @@ export const exportToCSV = (data: CalculatorExportData) => {
       ].join(','))
     ];
 
-    fileName = `${inputs.loanType}_amortization_schedule.csv`;
+    const loanType = 'loanType' in inputs ? (inputs as LoanInputs).loanType : 'mortgage';
+    fileName = `${loanType}_amortization_schedule.csv`;
   }
 
   const csvContent = csvRows.join('\n');
@@ -269,8 +271,10 @@ export const exportToPDF = async (data: CalculatorExportData) => {
       ['Total Monthly Payment:', formatCurrency(mortgageResults.monthlyPayment, mortgageInputs.currency)]
     ];
   } else {
+    const loanResults = results as LoanResults;
+    const loanInputs = inputs as LoanInputs;
     resultsDetails = [
-      ['Monthly Payment:', formatCurrency(results.monthlyPayment, inputs.currency)]
+      ['Monthly Payment:', formatCurrency(loanResults.monthlyPayment, loanInputs.currency)]
     ];
   }
 
@@ -293,9 +297,11 @@ export const exportToPDF = async (data: CalculatorExportData) => {
     pdf.setFontSize(12);
     yPosition += 15;
 
+    const loanResults = results as MortgageResults | LoanResults;
+    const loanInputs = inputs as MortgageInputs | LoanInputs;
     const summaryDetails = [
-      ['Total Interest:', formatCurrency(results.totalInterest, inputs.currency)],
-      ['Total Payment:', formatCurrency(results.totalPayment, inputs.currency)]
+      ['Total Interest:', formatCurrency(loanResults.totalInterest, loanInputs.currency)],
+      ['Total Payment:', formatCurrency(loanResults.totalPayment, loanInputs.currency)]
     ];
 
     summaryDetails.forEach(([label, value]) => {
@@ -363,9 +369,11 @@ export const exportFullPDFReport = async (elementId: string, data: CalculatorExp
     } else if (isDebt) {
       title = 'Debt Payoff Calculator Report';
     } else if (isMortgage) {
-      title = data.inputs.loanType === 'mortgage' ? 'Mortgage Calculator Report' : 'Remortgage Calculator Report';
+      const mortgageInputs = data.inputs as MortgageInputs;
+      title = mortgageInputs.loanType === 'mortgage' ? 'Mortgage Calculator Report' : 'Remortgage Calculator Report';
     } else {
-      title = `${data.inputs.loanType.charAt(0).toUpperCase() + data.inputs.loanType.slice(1)} Loan Calculator Report`;
+      const loanInputs = data.inputs as LoanInputs;
+      title = `${loanInputs.loanType.charAt(0).toUpperCase() + loanInputs.loanType.slice(1)} Loan Calculator Report`;
     }
     pdf.text(title, pdfWidth / 2, 30, { align: 'center' });
 

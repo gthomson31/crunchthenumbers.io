@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import ExportButton from "@/components/ui/ExportButton";
 import { formatCurrency, currencies } from "@/lib/utils/currency";
-import { DebtInputs, DebtResults, DebtItem } from "@/lib/types/calculator";
+import { DebtInputs, DebtResults, DebtItem, DebtPaymentSchedule, DebtMonthlyPayment } from "@/lib/types/calculator";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function DebtPayoffCalculator() {
@@ -154,8 +154,8 @@ export default function DebtPayoffCalculator() {
   ) => {
     // Create working copies of debts
     let workingDebts = debts.map((debt) => ({ ...debt }));
-    const debtSchedule = [];
-    const monthlyBreakdown = [];
+    const debtSchedule: DebtPaymentSchedule[] = [];
+    const monthlyBreakdown: DebtMonthlyPayment[] = [];
 
     let month = 0;
     let totalInterest = 0;
@@ -780,8 +780,8 @@ export default function DebtPayoffCalculator() {
             </div>
 
             <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                {chartView === "balance" && (
+              {chartView === "balance" && (
+                <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={balanceChartData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
@@ -804,9 +804,11 @@ export default function DebtPayoffCalculator() {
                       name="Remaining Balance"
                     />
                   </LineChart>
-                )}
+                </ResponsiveContainer>
+              )}
 
-                {chartView === "payments" && (
+              {chartView === "payments" && (
+                <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={balanceChartData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
@@ -838,9 +840,11 @@ export default function DebtPayoffCalculator() {
                       name="Principal Payment"
                     />
                   </AreaChart>
-                )}
+                </ResponsiveContainer>
+              )}
 
-                {chartView === "breakdown" && (
+              {chartView === "breakdown" && (
+                <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={debtBreakdownData}
@@ -867,9 +871,11 @@ export default function DebtPayoffCalculator() {
                       }
                     />
                   </PieChart>
-                )}
+                </ResponsiveContainer>
+              )}
 
-                {chartView === "progress" && (
+              {chartView === "progress" && (
+                <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={results.debtSchedule}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="debtName" />
@@ -878,8 +884,8 @@ export default function DebtPayoffCalculator() {
                     <Legend />
                     <Bar dataKey="monthsToPayoff" fill="#10b981" name="Months to Payoff" />
                   </BarChart>
-                )}
-              </ResponsiveContainer>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
 

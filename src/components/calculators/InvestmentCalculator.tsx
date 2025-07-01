@@ -526,8 +526,8 @@ export default function InvestmentCalculator() {
             </div>
 
             <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                {chartView === "growth" && (
+              {chartView === "growth" && (
+                <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={growthChartData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="year" />
@@ -550,9 +550,11 @@ export default function InvestmentCalculator() {
                       name="Total Investment Value"
                     />
                   </LineChart>
-                )}
+                </ResponsiveContainer>
+              )}
 
-                {chartView === "contributions" && (
+              {chartView === "contributions" && (
+                <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={growthChartData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="year" />
@@ -584,9 +586,11 @@ export default function InvestmentCalculator() {
                       name="Investment Growth"
                     />
                   </AreaChart>
-                )}
+                </ResponsiveContainer>
+              )}
 
-                {chartView === "breakdown" && (
+              {chartView === "breakdown" && (
+                <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={breakdownData}
@@ -613,9 +617,11 @@ export default function InvestmentCalculator() {
                       }
                     />
                   </PieChart>
-                )}
+                </ResponsiveContainer>
+              )}
 
-                {chartView === "real" && (
+              {chartView === "real" && (
+                <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={growthChartData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="year" />
@@ -646,8 +652,8 @@ export default function InvestmentCalculator() {
                       name="Real Value (Inflation Adjusted)"
                     />
                   </LineChart>
-                )}
-              </ResponsiveContainer>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
 
