@@ -82,7 +82,9 @@ export default function MortgageCalculator() {
         return;
       }
 
-      const principal = inputs.loanAmount - inputs.downPayment;
+      const principal = inputs.loanType === "remortgage"
+        ? inputs.downPayment  // For remortgage, downPayment field holds outstanding balance
+        : inputs.loanAmount - inputs.downPayment;
       const monthlyRate = inputs.interestRate / 100 / 12;
       const numberOfPayments = inputs.loanTerm * 12;
 
@@ -209,7 +211,9 @@ export default function MortgageCalculator() {
     if (year === 0) {
       balanceChartData.push({
         year: 0,
-        balance: inputs.loanAmount - inputs.downPayment,
+        balance: inputs.loanType === "remortgage"
+          ? inputs.downPayment
+          : inputs.loanAmount - inputs.downPayment,
         principal: 0,
         interest: 0,
       });
@@ -261,7 +265,9 @@ export default function MortgageCalculator() {
   const totalBreakdownData = [
     {
       name: "Principal",
-      value: inputs.loanAmount - inputs.downPayment,
+      value: inputs.loanType === "remortgage"
+        ? inputs.downPayment
+        : inputs.loanAmount - inputs.downPayment,
       color: "#10B981",
     },
     { name: "Total Interest", value: results.totalInterest, color: "#EF4444" },
@@ -589,7 +595,9 @@ export default function MortgageCalculator() {
                   </p>
                   <p className="text-3xl font-bold">
                     {formatCurrency(
-                      inputs.loanAmount - inputs.downPayment,
+                      inputs.loanType === "remortgage"
+                        ? inputs.downPayment
+                        : inputs.loanAmount - inputs.downPayment,
                       inputs.currency
                     )}
                   </p>
