@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Calculator, TrendingUp, PiggyBank, CreditCard, Shield, Home, Scale } from 'lucide-react';
+import { Calculator, TrendingUp, PiggyBank, CreditCard, Shield, Home, Scale, DollarSign } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -127,6 +127,21 @@ export default function HomePage() {
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed flex-grow">
                 Should you rent or buy? Compare total costs including opportunity cost and make the best housing decision.
+              </p>
+            </div>
+          </Link>
+
+          {/* Salary Calculator */}
+          <Link href="/calculators/salary" className="group h-full">
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 h-full flex flex-col">
+              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-yellow-200 transition-colors">
+                <DollarSign className="w-6 h-6 text-yellow-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 group-hover:text-yellow-600 transition-colors">
+                Salary Calculator
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed flex-grow">
+                Calculate take-home pay for US & UK. Includes taxes, National Insurance, student loans, pensions, and more.
               </p>
             </div>
           </Link>

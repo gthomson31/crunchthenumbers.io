@@ -164,12 +164,17 @@ export default function InvestmentCalculator() {
       [field]:
         field === "currency" || field === "compoundingFrequency"
           ? value
-          : value === "" ? 0 : parseFloat(value) || 0,
+          : value === "" ? "" : parseFloat(value) || 0,
     }));
 
     if (field === "currency") {
       setSavedCurrency(value);
     }
+  };
+
+  const formatInputValue = (value: number | string) => {
+    if (value === "" || value === 0) return "";
+    return value.toString();
   };
 
   // Prepare chart data for investment growth over time
@@ -255,7 +260,7 @@ export default function InvestmentCalculator() {
                   </span>
                   <input
                     type="number"
-                    value={inputs.initialInvestment}
+                    value={formatInputValue(inputs.initialInvestment)}
                     onChange={(e) => handleInputChange("initialInvestment", e.target.value)}
                     className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     min="0"
@@ -273,7 +278,7 @@ export default function InvestmentCalculator() {
                   </span>
                   <input
                     type="number"
-                    value={inputs.monthlyContribution}
+                    value={formatInputValue(inputs.monthlyContribution)}
                     onChange={(e) => handleInputChange("monthlyContribution", e.target.value)}
                     className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     min="0"
@@ -288,7 +293,7 @@ export default function InvestmentCalculator() {
                 <div className="relative">
                   <input
                     type="number"
-                    value={inputs.annualReturn === 0 ? "" : inputs.annualReturn}
+                    value={formatInputValue(inputs.annualReturn)}
                     onChange={(e) => handleInputChange("annualReturn", e.target.value)}
                     className="w-full pl-4 pr-8 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     min="0"
@@ -309,7 +314,7 @@ export default function InvestmentCalculator() {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
                   <input
                     type="number"
-                    value={inputs.investmentPeriod}
+                    value={formatInputValue(inputs.investmentPeriod)}
                     onChange={(e) => handleInputChange("investmentPeriod", e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     min="1"
@@ -372,7 +377,7 @@ export default function InvestmentCalculator() {
                 <div className="relative">
                   <input
                     type="number"
-                    value={inputs.inflationRate === 0 ? "" : inputs.inflationRate}
+                    value={formatInputValue(inputs.inflationRate)}
                     onChange={(e) => handleInputChange("inflationRate", e.target.value)}
                     className="w-full pl-4 pr-8 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     min="0"
@@ -395,7 +400,7 @@ export default function InvestmentCalculator() {
                 <div className="relative">
                   <input
                     type="number"
-                    value={inputs.contributionIncrease === 0 ? "" : inputs.contributionIncrease}
+                    value={formatInputValue(inputs.contributionIncrease)}
                     onChange={(e) => handleInputChange("contributionIncrease", e.target.value)}
                     className="w-full pl-4 pr-8 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     min="0"

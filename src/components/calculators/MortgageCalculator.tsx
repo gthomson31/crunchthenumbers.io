@@ -197,12 +197,17 @@ export default function MortgageCalculator() {
       [field]:
         field === "currency" || field === "loanType"
           ? value
-          : value === "" ? 0 : parseFloat(value) || 0,
+          : value === "" ? "" : parseFloat(value) || 0,
     }));
 
     if (field === "currency") {
       setSavedCurrency(value);
     }
+  };
+
+  const formatInputValue = (value: number | string) => {
+    if (value === "" || value === 0) return "";
+    return value.toString();
   };
 
   // Prepare chart data for remaining balance over time
@@ -363,7 +368,7 @@ export default function MortgageCalculator() {
                 </label>
                 <input
                   type="number"
-                  value={inputs.loanAmount || ""}
+                  value={formatInputValue(inputs.loanAmount)}
                   onChange={(e) =>
                     handleInputChange("loanAmount", e.target.value)
                   }
@@ -380,7 +385,7 @@ export default function MortgageCalculator() {
                 </label>
                 <input
                   type="number"
-                  value={inputs.downPayment || ""}
+                  value={formatInputValue(inputs.downPayment)}
                   onChange={(e) =>
                     handleInputChange("downPayment", e.target.value)
                   }
@@ -408,7 +413,7 @@ export default function MortgageCalculator() {
                 <input
                   type="number"
                   step="0.01"
-                  value={inputs.interestRate === 0 ? "" : inputs.interestRate}
+                  value={formatInputValue(inputs.interestRate)}
                   onChange={(e) =>
                     handleInputChange("interestRate", e.target.value)
                   }
@@ -425,7 +430,7 @@ export default function MortgageCalculator() {
                   type="number"
                   min="1"
                   max="50"
-                  value={inputs.loanTerm || ""}
+                  value={formatInputValue(inputs.loanTerm)}
                   onChange={(e) =>
                     handleInputChange("loanTerm", e.target.value)
                   }
@@ -451,7 +456,7 @@ export default function MortgageCalculator() {
                 </label>
                 <input
                   type="number"
-                  value={inputs.propertyTax || ""}
+                  value={formatInputValue(inputs.propertyTax)}
                   onChange={(e) =>
                     handleInputChange("propertyTax", e.target.value)
                   }
@@ -466,7 +471,7 @@ export default function MortgageCalculator() {
                 </label>
                 <input
                   type="number"
-                  value={inputs.homeInsurance || ""}
+                  value={formatInputValue(inputs.homeInsurance)}
                   onChange={(e) =>
                     handleInputChange("homeInsurance", e.target.value)
                   }
@@ -481,7 +486,7 @@ export default function MortgageCalculator() {
                 </label>
                 <input
                   type="number"
-                  value={inputs.pmi || ""}
+                  value={formatInputValue(inputs.pmi)}
                   onChange={(e) => handleInputChange("pmi", e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   placeholder="Enter monthly PMI"
@@ -505,7 +510,7 @@ export default function MortgageCalculator() {
                 </label>
                 <input
                   type="number"
-                  value={inputs.monthlyOverpayment || ""}
+                  value={formatInputValue(inputs.monthlyOverpayment)}
                   onChange={(e) =>
                     handleInputChange("monthlyOverpayment", e.target.value)
                   }
@@ -523,7 +528,7 @@ export default function MortgageCalculator() {
                 </label>
                 <input
                   type="number"
-                  value={inputs.lumpSumPayment || ""}
+                  value={formatInputValue(inputs.lumpSumPayment)}
                   onChange={(e) =>
                     handleInputChange("lumpSumPayment", e.target.value)
                   }
@@ -540,7 +545,7 @@ export default function MortgageCalculator() {
                   type="number"
                   min="1"
                   max={inputs.loanTerm}
-                  value={inputs.lumpSumYear || ""}
+                  value={formatInputValue(inputs.lumpSumYear)}
                   onChange={(e) =>
                     handleInputChange("lumpSumYear", e.target.value)
                   }
