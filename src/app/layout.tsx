@@ -8,10 +8,10 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Crunch the Numbers | Free Financial Calculators & Tools',
-  description: 'Crunch the numbers with our free financial calculators for mortgages, loans, investments, and debt payoff. Multi-currency support with detailed charts and amortization schedules.',
-  keywords: 'crunch the numbers, financial calculator, mortgage calculator, loan calculator, investment calculator, debt payoff calculator',
-  authors: [{ name: 'Crunch the Numbers' }],
+  title: 'Free Financial Calculators | Smart Money Decisions Made Simple',
+  description: 'Make smarter financial decisions with our free, professional-grade calculators. Get instant mortgage payments, investment projections, loan comparisons, and debt payoff strategies with detailed breakdowns.',
+  keywords: 'financial calculator, mortgage calculator, loan calculator, investment calculator, debt payoff calculator, retirement planning, compound interest, amortization schedule, financial planning tools',
+  authors: [{ name: 'Financial Calculator Suite' }],
 };
 
 export const viewport = {

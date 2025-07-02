@@ -9,8 +9,18 @@ export const currencies: Record<string, Currency> = {
   JPY: { symbol: '¥', locale: 'ja-JP' }
 };
 
-export const formatCurrency = (amount: number, currencyCode: string): string => {
+export const formatCurrency = (amount: number, currencyCode: string, abbreviated: boolean = true): string => {
   const currency = currencies[currencyCode];
+
+  if (!abbreviated) {
+    // For chart labels - abbreviated format
+    if (amount >= 1000000) {
+      return currency.symbol + (amount / 1000000).toFixed(1) + 'M';
+    } else if (amount >= 1000) {
+      return currency.symbol + (amount / 1000).toFixed(0) + 'K';
+    }
+  }
+
   if (currencyCode === 'JPY') {
     return currency.symbol + Math.round(amount).toLocaleString(currency.locale);
   }

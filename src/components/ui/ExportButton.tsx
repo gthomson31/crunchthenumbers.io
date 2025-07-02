@@ -6,13 +6,17 @@ import { CalculatorExportData, exportToCSV, exportToPDF, exportFullPDFReport, pr
 
 interface ExportButtonProps {
   data: CalculatorExportData;
+  filename?: string;
+  calculatorType?: string;
   calculatorElementId?: string;
   className?: string;
 }
 
 export default function ExportButton({
   data,
-  calculatorElementId = 'mortgage-calculator',
+  filename = 'calculation',
+  calculatorType = 'Calculator',
+  calculatorElementId = 'calculator',
   className = ''
 }: ExportButtonProps) {
   const [isOpen, setIsOpen] = useState(false);

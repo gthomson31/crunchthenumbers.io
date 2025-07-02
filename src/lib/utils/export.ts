@@ -1,6 +1,10 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { MortgageInputs, MortgageResults, LoanInputs, LoanResults, InvestmentInputs, InvestmentResults, DebtInputs, DebtResults } from '@/lib/types/calculator';
+import {
+  MortgageInputs, MortgageResults, LoanInputs, LoanResults, InvestmentInputs, InvestmentResults,
+  DebtInputs, DebtResults, EmergencyFundInputs, EmergencyFundResults, RetirementInputs,
+  RetirementResults, RentBuyInputs, RentBuyResults
+} from '@/lib/types/calculator';
 import { formatCurrency } from './currency';
 
 export interface ExportData {
@@ -23,7 +27,22 @@ export interface DebtExportData {
   results: DebtResults;
 }
 
-export type CalculatorExportData = ExportData | LoanExportData | InvestmentExportData | DebtExportData;
+export interface EmergencyFundExportData {
+  inputs: EmergencyFundInputs;
+  results: EmergencyFundResults;
+}
+
+export interface RetirementExportData {
+  inputs: RetirementInputs;
+  results: RetirementResults;
+}
+
+export interface RentBuyExportData {
+  inputs: RentBuyInputs;
+  results: RentBuyResults;
+}
+
+export type CalculatorExportData = ExportData | LoanExportData | InvestmentExportData | DebtExportData | EmergencyFundExportData | RetirementExportData | RentBuyExportData;
 
 // CSV Export for Amortization Schedule or Investment Breakdown
 export const exportToCSV = (data: CalculatorExportData) => {
@@ -32,6 +51,9 @@ export const exportToCSV = (data: CalculatorExportData) => {
   // Check data type
   const isInvestment = 'initialInvestment' in inputs;
   const isDebt = 'debts' in inputs;
+  const isEmergencyFund = 'monthlyExpenses' in inputs;
+  const isRetirement = 'currentAge' in inputs;
+  const isRentBuy = 'homePrice' in inputs;
 
   let headers: string[];
   let csvRows: string[];
@@ -91,6 +113,14 @@ export const exportToCSV = (data: CalculatorExportData) => {
     ];
 
     fileName = `debt_payoff_schedule.csv`;
+  } else if (isEmergencyFund || isRetirement || isRentBuy) {
+    // For new calculators, provide a simple export message
+    headers = ['Calculator Type', 'Note'];
+    csvRows = [
+      headers.join(','),
+      `"${isEmergencyFund ? 'Emergency Fund' : isRetirement ? 'Retirement' : 'Rent vs Buy'}"`, '"Export functionality coming soon"'
+    ];
+    fileName = `${isEmergencyFund ? 'emergency_fund' : isRetirement ? 'retirement' : 'rent_vs_buy'}_calculation.csv`;
   } else {
     // Original amortization schedule logic for mortgage/loan calculators
     const amortizationResults = results as MortgageResults | LoanResults;
@@ -139,7 +169,10 @@ export const exportToPDF = async (data: CalculatorExportData) => {
   // Check data type
   const isInvestment = 'initialInvestment' in inputs;
   const isDebt = 'debts' in inputs;
-  const isMortgage = !isInvestment && !isDebt && 'downPayment' in inputs;
+  const isEmergencyFund = 'monthlyExpenses' in inputs;
+  const isRetirement = 'currentAge' in inputs;
+  const isRentBuy = 'homePrice' in inputs;
+  const isMortgage = !isInvestment && !isDebt && !isEmergencyFund && !isRetirement && !isRentBuy && 'downPayment' in inputs;
 
   // Title
   let title: string;
@@ -147,14 +180,31 @@ export const exportToPDF = async (data: CalculatorExportData) => {
     title = 'Investment Calculator Report';
   } else if (isDebt) {
     title = 'Debt Payoff Calculator Report';
+  } else if (isEmergencyFund) {
+    title = 'Emergency Fund Calculator Report';
+  } else if (isRetirement) {
+    title = '401(k) Retirement Calculator Report';
+  } else if (isRentBuy) {
+    title = 'Rent vs Buy Calculator Report';
   } else if (isMortgage) {
-    title = inputs.loanType === 'mortgage' ? 'Mortgage Calculator Report' : 'Remortgage Calculator Report';
+    const mortgageInputs = inputs as MortgageInputs;
+    title = mortgageInputs.loanType === 'mortgage' ? 'Mortgage Calculator Report' : 'Remortgage Calculator Report';
   } else {
-    title = `${inputs.loanType.charAt(0).toUpperCase() + inputs.loanType.slice(1)} Loan Calculator Report`;
+    const loanInputs = inputs as LoanInputs;
+    title = `${loanInputs.loanType.charAt(0).toUpperCase() + loanInputs.loanType.slice(1)} Loan Calculator Report`;
   }
 
   pdf.setFontSize(20);
   pdf.text(title, 20, 30);
+
+  // For new calculators, provide a simple note and return early
+  if (isEmergencyFund || isRetirement || isRentBuy) {
+    pdf.setFontSize(14);
+    pdf.text('Export functionality for this calculator is coming soon.', 20, 50);
+    pdf.text('Please use the calculator interface for your calculations.', 20, 70);
+    pdf.save(`${isEmergencyFund ? 'emergency_fund' : isRetirement ? 'retirement' : 'rent_vs_buy'}_report.pdf`);
+    return;
+  }
 
   // Details Section
   pdf.setFontSize(16);
@@ -321,10 +371,18 @@ export const exportToPDF = async (data: CalculatorExportData) => {
     calculatorType = 'investment';
   } else if (isDebt) {
     calculatorType = 'debt_payoff';
+  } else if (isEmergencyFund) {
+    calculatorType = 'emergency_fund';
+  } else if (isRetirement) {
+    calculatorType = 'retirement';
+  } else if (isRentBuy) {
+    calculatorType = 'rent_vs_buy';
   } else if (isMortgage) {
-    calculatorType = inputs.loanType;
+    const mortgageInputs = inputs as MortgageInputs;
+    calculatorType = mortgageInputs.loanType;
   } else {
-    calculatorType = inputs.loanType;
+    const loanInputs = inputs as LoanInputs;
+    calculatorType = loanInputs.loanType;
   }
   const fileName = `${calculatorType}_calculator_report.pdf`;
   pdf.save(fileName);
@@ -333,6 +391,19 @@ export const exportToPDF = async (data: CalculatorExportData) => {
 // PDF Export with Charts
 export const exportFullPDFReport = async (elementId: string, data: CalculatorExportData) => {
   try {
+    const { inputs } = data;
+
+    // Check data type
+    const isEmergencyFund = 'monthlyExpenses' in inputs;
+    const isRetirement = 'currentAge' in inputs;
+    const isRentBuy = 'homePrice' in inputs;
+
+    // For new calculators, show coming soon message
+    if (isEmergencyFund || isRetirement || isRentBuy) {
+      alert('Full PDF export for this calculator is coming soon!');
+      return;
+    }
+
     const element = document.getElementById(elementId);
     if (!element) {
       throw new Error('Calculator element not found');

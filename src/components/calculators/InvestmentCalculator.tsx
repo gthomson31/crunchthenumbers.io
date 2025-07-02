@@ -164,7 +164,7 @@ export default function InvestmentCalculator() {
       [field]:
         field === "currency" || field === "compoundingFrequency"
           ? value
-          : parseFloat(value) || 0,
+          : value === "" ? 0 : parseFloat(value) || 0,
     }));
 
     if (field === "currency") {
@@ -288,7 +288,7 @@ export default function InvestmentCalculator() {
                 <div className="relative">
                   <input
                     type="number"
-                    value={inputs.annualReturn}
+                    value={inputs.annualReturn === 0 ? "" : inputs.annualReturn}
                     onChange={(e) => handleInputChange("annualReturn", e.target.value)}
                     className="w-full pl-4 pr-8 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     min="0"
@@ -372,7 +372,7 @@ export default function InvestmentCalculator() {
                 <div className="relative">
                   <input
                     type="number"
-                    value={inputs.inflationRate}
+                    value={inputs.inflationRate === 0 ? "" : inputs.inflationRate}
                     onChange={(e) => handleInputChange("inflationRate", e.target.value)}
                     className="w-full pl-4 pr-8 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     min="0"
@@ -395,7 +395,7 @@ export default function InvestmentCalculator() {
                 <div className="relative">
                   <input
                     type="number"
-                    value={inputs.contributionIncrease}
+                    value={inputs.contributionIncrease === 0 ? "" : inputs.contributionIncrease}
                     onChange={(e) => handleInputChange("contributionIncrease", e.target.value)}
                     className="w-full pl-4 pr-8 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     min="0"

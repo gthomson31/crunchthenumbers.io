@@ -45,6 +45,21 @@ export default function Footer() {
                   Debt Payoff Calculator
                 </Link>
               </li>
+              <li>
+                <Link href="/calculators/emergency-fund" className="text-gray-400 hover:text-white transition-colors">
+                  Emergency Fund Calculator
+                </Link>
+              </li>
+              <li>
+                <Link href="/calculators/retirement" className="text-gray-400 hover:text-white transition-colors">
+                  401(k) Calculator
+                </Link>
+              </li>
+              <li>
+                <Link href="/calculators/rent-vs-buy" className="text-gray-400 hover:text-white transition-colors">
+                  Rent vs Buy Calculator
+                </Link>
+              </li>
             </ul>
           </div>
 

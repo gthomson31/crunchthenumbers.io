@@ -158,8 +158,12 @@ export default function DebtPayoffCalculator() {
     debtSchedule: DebtPaymentSchedule[];
     monthlyBreakdown: DebtMonthlyPayment[];
   } => {
-    // Create working copies of debts
-    let workingDebts = debts.map((debt) => ({ ...debt }));
+    // Create working copies of debts with tracking
+    let workingDebts = debts.map((debt) => ({
+      ...debt,
+      totalInterestPaid: 0,
+      totalAmountPaid: 0
+    }));
     const debtSchedule: DebtPaymentSchedule[] = [];
     const monthlyBreakdown: DebtMonthlyPayment[] = [];
 
@@ -203,6 +207,8 @@ export default function DebtPayoffCalculator() {
         const totalPayment = interestPayment + principalPayment;
 
         debt.balance -= principalPayment;
+        debt.totalInterestPaid += interestPayment;
+        debt.totalAmountPaid += totalPayment;
         totalInterest += interestPayment;
         totalPaid += totalPayment;
         monthlyTotalPayment += totalPayment;
@@ -225,8 +231,8 @@ export default function DebtPayoffCalculator() {
             debtId: debt.id,
             debtName: debt.name,
             payoffMonth: month,
-            totalPaid: Math.round(totalPaid * 100) / 100,
-            totalInterest: Math.round(totalInterest * 100) / 100,
+            totalPaid: Math.round(debt.totalAmountPaid * 100) / 100,
+            totalInterest: Math.round(debt.totalInterestPaid * 100) / 100,
             monthsToPayoff: month,
           });
         }
@@ -249,6 +255,7 @@ export default function DebtPayoffCalculator() {
         if (targetDebt) {
           let extraPrincipal = Math.min(availableExtraPayment, targetDebt.balance);
           targetDebt.balance -= extraPrincipal;
+          targetDebt.totalAmountPaid += extraPrincipal;
           totalPaid += extraPrincipal;
           monthlyTotalPayment += extraPrincipal;
           monthlyTotalPrincipal += extraPrincipal;
@@ -273,8 +280,8 @@ export default function DebtPayoffCalculator() {
               debtId: targetDebt.id,
               debtName: targetDebt.name,
               payoffMonth: month,
-              totalPaid: Math.round(totalPaid * 100) / 100,
-              totalInterest: Math.round(totalInterest * 100) / 100,
+              totalPaid: Math.round(targetDebt.totalAmountPaid * 100) / 100,
+              totalInterest: Math.round(targetDebt.totalInterestPaid * 100) / 100,
               monthsToPayoff: month,
             });
           }
@@ -566,12 +573,12 @@ export default function DebtPayoffCalculator() {
                           </label>
                           <input
                             type="number"
-                            value={debt.interestRate}
+                            value={debt.interestRate === 0 ? "" : debt.interestRate}
                             onChange={(e) =>
                               updateDebt(
                                 debt.id,
                                 "interestRate",
-                                parseFloat(e.target.value) || 0
+                                e.target.value === "" ? 0 : parseFloat(e.target.value) || 0
                               )
                             }
                             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"

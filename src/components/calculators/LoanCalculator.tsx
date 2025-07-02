@@ -179,7 +179,7 @@ export default function LoanCalculator() {
       [field]:
         field === "currency" || field === "loanType"
           ? value
-          : parseFloat(value) || 0,
+          : value === "" ? 0 : parseFloat(value) || 0,
     }));
 
     if (field === "currency") {
@@ -365,7 +365,7 @@ export default function LoanCalculator() {
                 <input
                   type="number"
                   step="0.01"
-                  value={inputs.interestRate || ""}
+                  value={inputs.interestRate === 0 ? "" : inputs.interestRate}
                   onChange={(e) =>
                     handleInputChange("interestRate", e.target.value)
                   }

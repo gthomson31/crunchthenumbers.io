@@ -1,4 +1,4 @@
-# Finance Calculator Website
+# Crunch the Numbers
 
 A professional financial calculator suite built with Next.js 14, TypeScript, and modern React patterns. Features mortgage calculations with multi-currency support, interactive charts, detailed amortization schedules, and export capabilities.
 

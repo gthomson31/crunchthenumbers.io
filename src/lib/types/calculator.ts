@@ -172,3 +172,210 @@ export interface DebtExportData {
   inputs: DebtInputs;
   results: DebtResults;
 }
+
+export interface EmergencyFundInputs {
+  monthlyExpenses: number;
+  currentSavings: number;
+  targetMonths: number;
+  monthlySavings: number;
+  currency: string;
+  annualReturn: number;
+}
+
+export interface EmergencyFundResults {
+  targetAmount: number;
+  amountNeeded: number;
+  monthsToGoal: number;
+  yearsToGoal: number;
+  monthlyBreakdown: EmergencyFundMonthData[];
+  isGoalMet: boolean;
+}
+
+export interface EmergencyFundMonthData {
+  month: number;
+  monthlyContribution: number;
+  interest: number;
+  balance: number;
+  monthsOfExpensesCovered: number;
+}
+
+export interface EmergencyFundExportData {
+  inputs: EmergencyFundInputs;
+  results: EmergencyFundResults;
+}
+
+export interface RetirementInputs {
+  currentAge: number;
+  retirementAge: number;
+  currentSalary: number;
+  currentBalance: number;
+  employeeContribution: number;
+  employerMatch: number;
+  employerMatchLimit: number;
+  salaryIncrease: number;
+  annualReturn: number;
+  currency: string;
+}
+
+export interface RetirementResults {
+  yearsToRetirement: number;
+  totalContributions: number;
+  totalEmployerMatch: number;
+  finalBalance: number;
+  monthlyRetirementIncome: number;
+  yearlyBreakdown: RetirementYearData[];
+  employerMatchReceived: number;
+}
+
+export interface RetirementYearData {
+  age: number;
+  year: number;
+  salary: number;
+  employeeContribution: number;
+  employerMatch: number;
+  totalContribution: number;
+  beginningBalance: number;
+  growth: number;
+  endingBalance: number;
+}
+
+export interface RetirementExportData {
+  inputs: RetirementInputs;
+  results: RetirementResults;
+}
+
+export interface RentBuyInputs {
+  homePrice: number;
+  downPayment: number;
+  interestRate: number;
+  loanTerm: number;
+  propertyTax: number;
+  homeInsurance: number;
+  hoaFees: number;
+  maintenanceRate: number;
+  monthlyRent: number;
+  rentIncrease: number;
+  rentersInsurance: number;
+  investmentReturn: number;
+  yearsToAnalyze: number;
+  currency: string;
+}
+
+export interface RentBuyResults {
+  totalCostToBuy: number;
+  totalCostToRent: number;
+  costDifference: number;
+  isBuyingBetter: boolean;
+  breakEvenYear: number;
+  yearlyBreakdown: RentBuyYearData[];
+  buyingCosts: BuyingCosts;
+  rentingCosts: RentingCosts;
+}
+
+export interface RentBuyYearData {
+  year: number;
+  buyingCumulativeCost: number;
+  rentingCumulativeCost: number;
+  difference: number;
+  homeValue: number;
+  mortgageBalance: number;
+  homeEquity: number;
+  investmentBalance: number;
+}
+
+export interface BuyingCosts {
+  monthlyPayment: number;
+  totalInterest: number;
+  totalPropertyTax: number;
+  totalInsurance: number;
+  totalMaintenance: number;
+  totalHOA: number;
+  closingCosts: number;
+}
+
+export interface RentingCosts {
+  totalRent: number;
+  totalInsurance: number;
+  investmentGrowth: number;
+  opportunityCost: number;
+}
+
+export interface RentBuyExportData {
+  inputs: RentBuyInputs;
+  results: RentBuyResults;
+}
+
+export interface BudgetInputs {
+  monthlyIncome: number;
+  expenses: BudgetExpense[];
+  currency: string;
+}
+
+export interface BudgetExpense {
+  id: string;
+  category: string;
+  name: string;
+  amount: number;
+  type: 'fixed' | 'variable' | 'discretionary';
+}
+
+export interface BudgetResults {
+  totalIncome: number;
+  totalExpenses: number;
+  surplus: number;
+  deficit: number;
+  expensesByCategory: CategorySummary[];
+  expensesByType: TypeSummary[];
+  savingsRate: number;
+  recommendations: string[];
+}
+
+export interface CategorySummary {
+  category: string;
+  amount: number;
+  percentage: number;
+  type: 'fixed' | 'variable' | 'discretionary';
+}
+
+export interface TypeSummary {
+  type: 'fixed' | 'variable' | 'discretionary';
+  amount: number;
+  percentage: number;
+}
+
+export interface BudgetExportData {
+  inputs: BudgetInputs;
+  results: BudgetResults;
+}
+
+export interface SavingsGoalInputs {
+  targetAmount: number;
+  currentSavings: number;
+  monthlyContribution: number;
+  annualReturn: number;
+  targetDate: string;
+  currency: string;
+}
+
+export interface SavingsGoalResults {
+  monthsToGoal: number;
+  yearsToGoal: number;
+  totalContributions: number;
+  totalInterest: number;
+  monthlyBreakdown: SavingsGoalMonthData[];
+  isGoalRealistic: boolean;
+  recommendedMonthlyAmount: number;
+}
+
+export interface SavingsGoalMonthData {
+  month: number;
+  contribution: number;
+  interest: number;
+  balance: number;
+  percentComplete: number;
+}
+
+export interface SavingsGoalExportData {
+  inputs: SavingsGoalInputs;
+  results: SavingsGoalResults;
+}
